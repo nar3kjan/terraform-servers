@@ -14,6 +14,8 @@ terraform {
   }
 }
 
+
+
 #==========================================================================================
 /*data "aws_ami" "latest_ubuntu" {
   owners = ["099720109477"]
@@ -37,7 +39,7 @@ data "aws_ami" "latest_amazon" {
 resource "aws_security_group" "my_webserver" {
   name        = "Web Server Security Group"
   description = "My First Security Group"
-  vpc_id = data.aws_vpc_id
+  vpc_id = aws_vpc.main.id
   dynamic "ingress" {
     for_each = ["80", "443", "22"]
     content {
