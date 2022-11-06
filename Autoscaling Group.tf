@@ -15,7 +15,7 @@ terraform {
 }
 
 data "cloud" "vpc_id" {
-  backend = "remote"
+  backend = "cloud"
 
   config = {
     organization = "nar3kjan"
