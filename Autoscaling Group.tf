@@ -47,7 +47,7 @@ data "aws_ami" "latest_amazon" {
 resource "aws_security_group" "my_webserver" {
   name        = "Web Server Security Group"
   description = "My First Security Group"
-  vpc_id = data.terraform_remote_state.vpc.vpc_id
+  vpc_id = data.terraform_remote_state.vpc.outputs.vpc_id
   dynamic "ingress" {
     for_each = ["80", "443", "22"]
     content {
