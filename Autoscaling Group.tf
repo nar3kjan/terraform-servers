@@ -14,6 +14,16 @@ terraform {
   }
 }
 
+data "cloud" "vpc_id" {
+  backend = "remote"
+
+  config = {
+    organization = "nar3kjan"
+    workspaces = {
+      name = "GitHub_Actions"
+    }
+  }
+}
 
 
 #==========================================================================================
@@ -39,7 +49,7 @@ data "aws_ami" "latest_amazon" {
 resource "aws_security_group" "my_webserver" {
   name        = "Web Server Security Group"
   description = "My First Security Group"
-  vpc_id = aws_vpc.main.id
+  vpc_id = data.cloud.vpc_id.vpc_id
   dynamic "ingress" {
     for_each = ["80", "443", "22"]
     content {
