@@ -24,6 +24,18 @@ data "terraform_remote_state" "vpc" {
   }
 }
 
+data "terraform_remote_state" "route53" {
+  backend = "remote"
+  config = {
+    organization = "nar3kjan"
+    workspaces = {
+      name = "Route53"
+    }
+  }
+}
+
+
+
 #==========================================================================================
 /*data "aws_ami" "latest_ubuntu" {
   owners = ["099720109477"]
@@ -91,7 +103,7 @@ resource "aws_autoscaling_group" "web" {
   min_size = 2
   max_size = 2
   min_elb_capacity = 2
-  vpc_zone_identifier = [data.aws_public_subnet1_id, data.aws_public_subnet2_id]
+  vpc_zone_identifier = [data.terraform_remote_state.vpc.outputs.aws_public_subnet1_id, data.terraform_remote_state.vpc.outputs.aws_public_subnet2_id]
   health_check_type = "ELB"
   load_balancers = [aws_elb.web.name]
  
@@ -121,7 +133,7 @@ resource "aws_elb" "web" {
   name = "WebServer-HA-ELB"
   #availability_zones = [data.aws_availability_zones.available.names[0]]
   security_groups = [aws_security_group.my_webserver.id]
-  subnets = [data.aws_public_subnet1_id, data.aws_public_subnet2_id]
+  subnets = [data.terraform_remote_state.vpc.outputs.aws_public_subnet1_id, data.terraform_remote_state.vpc.outputs.aws_public_subnet2_id]
 
   listener {
     lb_port = 80
@@ -134,7 +146,7 @@ resource "aws_elb" "web" {
     instance_protocol  = "http"
     lb_port            = 443
     lb_protocol        = "https"
-    ssl_certificate_id = data.certificate_id 
+    ssl_certificate_id = data.terraform_remote_state.route53.outputs.certificate_id 
   }
 
 
