@@ -14,9 +14,8 @@ terraform {
   }
 }
 
-data "cloud" "vpc_id" {
-  backend = "cloud"
-
+data "terraform_remote_state" "vpc" {
+  backend = "remote"
   config = {
     organization = "nar3kjan"
     workspaces = {
@@ -24,7 +23,6 @@ data "cloud" "vpc_id" {
     }
   }
 }
-
 
 #==========================================================================================
 /*data "aws_ami" "latest_ubuntu" {
@@ -49,7 +47,7 @@ data "aws_ami" "latest_amazon" {
 resource "aws_security_group" "my_webserver" {
   name        = "Web Server Security Group"
   description = "My First Security Group"
-  vpc_id = data.cloud.vpc_id.vpc_id
+  vpc_id = data.terraform_remote_state.vpc.vpc_id
   dynamic "ingress" {
     for_each = ["80", "443", "22"]
     content {
