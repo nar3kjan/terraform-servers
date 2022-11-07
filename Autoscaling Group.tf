@@ -165,23 +165,19 @@ resource "aws_elb" "web" {
 }
 
 
-resource "aws_lb_listener_rule" "redirect_http_to_https" {
-  listener_arn = aws_elb.web.arn
 
-  action {
+resource "aws_lb_listener" "front_end" {
+  load_balancer_arn = aws_elb.web.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
     type = "redirect"
 
-     redirect {
+    redirect {
       port        = "443"
       protocol    = "HTTPS"
       status_code = "HTTP_301"
-    }
-  }
-
-  condition {
-    http_header {
-      http_header_name = "X-Forwarded-For"
-      values           = ["192.168.1.*"]
     }
   }
 }
