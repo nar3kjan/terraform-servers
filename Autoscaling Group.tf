@@ -166,8 +166,12 @@ resource "aws_elb" "web" {
 
 
 
-resource "aws_elb_listener" "front_end" {
-  load_balancer_arn = aws_elb.web.arn
+resource "aws_lb" "front_end" {
+  # ...
+}
+
+resource "aws_lb_listener" "front_end" {
+  load_balancer_arn = "${aws_lb.front_end.arn}"
   port              = "80"
   protocol          = "HTTP"
 
