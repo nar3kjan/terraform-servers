@@ -171,10 +171,17 @@ resource "aws_lb_listener_rule" "redirect_http_to_https" {
   action {
     type = "redirect"
 
-    redirect {
+     redirect {
       port        = "443"
       protocol    = "HTTPS"
       status_code = "HTTP_301"
+    }
+  }
+
+  condition {
+    http_header {
+      http_header_name = "X-Forwarded-For"
+      values           = ["192.168.1.*"]
     }
   }
 }
