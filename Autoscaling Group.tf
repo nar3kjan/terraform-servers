@@ -105,7 +105,7 @@ resource "aws_autoscaling_group" "web" {
   min_elb_capacity = 2
   vpc_zone_identifier = [data.terraform_remote_state.vpc.outputs.aws_public_subnet1_id, data.terraform_remote_state.vpc.outputs.aws_public_subnet2_id]
   health_check_type = "ELB"
-  load_balancers = [aws_elb.web.name]
+  load_balancers = [aws_lb.web.name]
  
   
   dynamic "tag" {
@@ -127,8 +127,79 @@ resource "aws_autoscaling_group" "web" {
     }
   }
 
+resource "aws_lb" "web" {
+  name               = "web-server"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.my_webserver.id]
+  subnets            = [data.terraform_remote_state.vpc.outputs.aws_public_subnet1_id, data.terraform_remote_state.vpc.outputs.aws_public_subnet2_id]
+
+  enable_deletion_protection = true
+
+  access_logs {
+    bucket  = aws_s3_bucket.lb_logs.bucket
+    prefix  = "web-server"
+    enabled = true
+  }
+
+  health_check {
+    healthy_threshold = 2
+    unhealthy_threshold = 2
+    timeout = 3
+    target = "HTTP:80/"
+    interval = 10
+  }
+
+  tags = {
+    Name = "WebServer-Highly_Available_ALB"
+  }
+}
+
+resource "aws_lb_target_group" "http" {
+  name     = "web-server_http"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = data.terraform_remote_state.vpc.outputs.vpc_id
+}
 
 
+resource "aws_lb_target_group_attachment" "http" {
+  target_group_arn = aws_lb_target_group.http.arn
+  target_id        = aws_autoscaling_group.web.id
+  port             = 80
+}
+
+resource "aws_lb_listener" "forward" {
+  load_balancer_arn = aws_lb.web.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = data.terraform_remote_state.route53.outputs.certificate_id
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.http.arn
+  }
+}
+
+resource "aws_lb_listener" "redirect" {
+  load_balancer_arn = aws_lb.web.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+}
+
+
+/*
 resource "aws_elb" "web" {
   name = "WebServer-HA-ELB"
   #availability_zones = [data.aws_availability_zones.available.names[0]]
@@ -163,3 +234,4 @@ resource "aws_elb" "web" {
     Name = "WebServer-Highly_Available_ELB"
   }
 }
+*/
