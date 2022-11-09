@@ -163,7 +163,6 @@ resource "aws_autoscaling_attachment" "asg_attachment_bar" {
 }
 
 
-
 resource "aws_lb_listener" "forward" {
   load_balancer_arn = aws_lb.web.arn
   port              = "443"
