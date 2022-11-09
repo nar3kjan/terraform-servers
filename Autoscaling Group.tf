@@ -105,7 +105,7 @@ resource "aws_autoscaling_group" "web" {
   min_elb_capacity = 2
   vpc_zone_identifier = [data.terraform_remote_state.vpc.outputs.aws_public_subnet1_id, data.terraform_remote_state.vpc.outputs.aws_public_subnet2_id]
   health_check_type = "ELB"
-  load_balancers = [aws_lb.web.name]
+  #load_balancers = [aws_lb.web.name]
  
   
   dynamic "tag" {
