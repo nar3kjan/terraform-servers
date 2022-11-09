@@ -13,7 +13,7 @@ terraform {
     }
   }
 }
-/*
+
 data "terraform_remote_state" "vpc" {
   backend = "remote"
   config = {
@@ -33,7 +33,7 @@ data "terraform_remote_state" "route53" {
     }
   }
 }
-*/
+
 
 
 #==========================================================================================
@@ -46,7 +46,7 @@ data "terraform_remote_state" "route53" {
   }
 }
 */
-/*
+
 data "aws_ami" "latest_amazon" {
   owners = ["137112412989"]
   most_recent = true
@@ -137,7 +137,7 @@ resource "aws_lb" "web" {
   security_groups    = [aws_security_group.my_webserver.id]
   subnets            = [data.terraform_remote_state.vpc.outputs.aws_public_subnet1_id, data.terraform_remote_state.vpc.outputs.aws_public_subnet2_id]
 
-  enable_deletion_protection = true
+  enable_deletion_protection = false
 
 
   tags = {
@@ -195,7 +195,7 @@ resource "aws_lb_listener" "redirect" {
   }
 }
 
-*/
+
 
 /*
 resource "aws_elb" "web" {
