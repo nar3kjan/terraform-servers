@@ -1,4 +1,3 @@
-/*
 provider "aws" {
   region = var.aws_region
 }
@@ -14,7 +13,7 @@ terraform {
     }
   }
 }
-
+/*
 data "terraform_remote_state" "vpc" {
   backend = "remote"
   config = {
