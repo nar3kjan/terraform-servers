@@ -170,6 +170,9 @@ resource "aws_lb_listener" "forward" {
   }
 }
 
+
+
+
 resource "aws_lb_listener" "redirect" {
   load_balancer_arn = aws_lb.web.arn
   port              = "80"
