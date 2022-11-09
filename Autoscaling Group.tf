@@ -135,12 +135,7 @@ resource "aws_elb" "web" {
   security_groups = [aws_security_group.my_webserver.id]
   subnets = [data.terraform_remote_state.vpc.outputs.aws_public_subnet1_id, data.terraform_remote_state.vpc.outputs.aws_public_subnet2_id]
 
-  listener {
-    lb_port = 80
-    lb_protocol = "http"
-    instance_port = 80
-    instance_protocol = "http"
-  }
+ 
   listener {
     instance_port      = 80
     instance_protocol  = "http"
