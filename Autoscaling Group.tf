@@ -1,3 +1,4 @@
+/*
 provider "aws" {
   region = var.aws_region
 }
@@ -33,7 +34,7 @@ data "terraform_remote_state" "route53" {
     }
   }
 }
-
+*/
 
 
 #==========================================================================================
@@ -46,7 +47,7 @@ data "terraform_remote_state" "route53" {
   }
 }
 */
-
+/*
 data "aws_ami" "latest_amazon" {
   owners = ["137112412989"]
   most_recent = true
@@ -195,7 +196,7 @@ resource "aws_lb_listener" "redirect" {
   }
 }
 
-
+*/
 
 /*
 resource "aws_elb" "web" {
@@ -233,3 +234,4 @@ resource "aws_elb" "web" {
   }
 }
 */
+
