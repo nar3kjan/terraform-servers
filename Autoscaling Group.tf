@@ -136,12 +136,7 @@ resource "aws_lb" "web" {
 
   enable_deletion_protection = true
 
-  access_logs {
-    bucket  = aws_s3_bucket.lb_logs.bucket
-    prefix  = "web-server"
-    enabled = true
-  }
-
+ 
   health_check {
     healthy_threshold = 2
     unhealthy_threshold = 2
@@ -156,7 +151,7 @@ resource "aws_lb" "web" {
 }
 
 resource "aws_lb_target_group" "http" {
-  name     = "web-server_http"
+  name     = "web-server-http"
   port     = 80
   protocol = "HTTP"
   vpc_id   = data.terraform_remote_state.vpc.outputs.vpc_id
