@@ -190,6 +190,7 @@ resource "aws_lb_listener" "redirect" {
 }
 
 
+
 /*
 resource "aws_elb" "web" {
   name = "WebServer-HA-ELB"
